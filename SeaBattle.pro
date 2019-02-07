@@ -28,12 +28,18 @@ SOURCES += \
         main.cpp \
     field.cpp \
     game.cpp \
-    cell.cpp
+    cell.cpp \
+    ship.cpp \
+    buildui.cpp \
+    shiplabel.cpp
 
 HEADERS += \
     field.h \
     game.h \
-    cell.h
+    cell.h \
+    ship.h \
+    buildui.h \
+    shiplabel.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

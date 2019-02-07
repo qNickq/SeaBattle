@@ -1,11 +1,18 @@
-#ifndef SHIP_H
-#define SHIP_H
+#pragma once
 
+#include <QGraphicsObject>
+#include <QPainter>
 
 class Ship : public QGraphicsObject
 {
 public:
-    Ship();
-};
+    Ship(int);
 
-#endif // SHIP_H
+private:
+    int size;
+    QPixmap* sprite;
+
+protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const;
+};

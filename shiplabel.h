@@ -1,11 +1,22 @@
-#ifndef CLICKABLESHIP_H
-#define CLICKABLESHIP_H
+#pragma once
+#include <QtWidgets>
 
-
-class ClickableShip : public QLabel
+class ShipLabel : public QLabel
 {
+    Q_OBJECT
 public:
-    ClickableShip();
-};
+    ShipLabel( const QString& text="", QWidget* parent=nullptr );
+    ~ShipLabel();
 
-#endif // CLICKABLESHIP_H
+    void setType(int);
+
+signals:
+    void clicked(int);
+
+protected:
+    void mousePressEvent(QMouseEvent* event);
+
+private:
+    int type;
+    int count;
+};

@@ -2,6 +2,7 @@
 
 #include <QtWidgets>
 #include "field.h"
+#include "buildui.h"
 
 class Game : public QWidget
 {
@@ -10,10 +11,6 @@ public:
     Game(QWidget *parent = nullptr);
 
 private:
-    QGraphicsView * v_field1;
-    QGraphicsView * v_field2;
-
-signals:
-
-public slots:
+    QGraphicsView * view_field1;
+    QGraphicsView * view_field2;
 };

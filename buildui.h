@@ -1,17 +1,18 @@
-#ifndef BUILDUI_H
-#define BUILDUI_H
+#pragma once
 
-#include <QWidget>
+#include <QtWidgets>
+#include "shiplabel.h"
 
 class BuildUI : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BuildUI(QWidget *parent = nullptr);
+    BuildUI(QWidget *parent = nullptr);
 
 signals:
+    void building(int);
 
 public slots:
+    void buildShip(int);
 };
 
-#endif // BUILDUI_H
