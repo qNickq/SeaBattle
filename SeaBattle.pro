@@ -26,12 +26,19 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-    field.cpp
+    field.cpp \
+    game.cpp \
+    cell.cpp
 
 HEADERS += \
-    field.h
+    field.h \
+    game.h \
+    cell.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    res.qrc

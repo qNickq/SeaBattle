@@ -1,17 +1,19 @@
-#ifndef GAME_H
-#define GAME_H
+#pragma once
 
-#include <QWidget>
+#include <QtWidgets>
+#include "field.h"
 
-class game : public QWidget
+class Game : public QWidget
 {
     Q_OBJECT
 public:
-    explicit game(QWidget *parent = nullptr);
+    Game(QWidget *parent = nullptr);
+
+private:
+    QGraphicsView * v_field1;
+    QGraphicsView * v_field2;
 
 signals:
 
 public slots:
 };
-
-#endif // GAME_H
