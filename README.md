@@ -1,2 +1,2 @@
 # SeaBattle
-Sea Battle on Qt.
+Online Sea Battle on Qt.
