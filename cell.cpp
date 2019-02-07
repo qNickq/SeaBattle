@@ -3,7 +3,7 @@
 Cell::Cell(int i, int k)
 {
     pos = QPoint(i,k);
-    sprite = new QPixmap(":/sprites/cell.png");
+    sprite = new QPixmap(":/res/cell.png");
 }
 
 void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
