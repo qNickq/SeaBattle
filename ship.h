@@ -9,10 +9,12 @@ public:
     Ship(int);
 
 private:
-    int size;
+    int type; //Type of ship (1, 2, 3, 4).
     QPixmap* sprite;
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     QRectF boundingRect() const;
+
+    void mousePressEvent(QGraphicsSceneMouseEvent *);
 };

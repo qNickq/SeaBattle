@@ -1,9 +1,9 @@
 #pragma once
 
 #include <QtWidgets>
-#include "shiplabel.h"
+#include "ship.h"
 
-class BuildUI : public QWidget
+class BuildUI : public QGraphicsView
 {
     Q_OBJECT
 public:
@@ -14,5 +14,7 @@ signals:
 
 public slots:
     void buildShip(int);
+private:
+    int count;
 };
 

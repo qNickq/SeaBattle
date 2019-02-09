@@ -1,7 +1,10 @@
 #include "buildui.h"
 
-BuildUI::BuildUI(QWidget *parent) : QWidget(parent)
+BuildUI::BuildUI(QWidget *parent)
 {
+    QGraphicsScene * scene = new QGraphicsScene;
+    setScene(scene);
+
     //Background
     QPalette pal;
     QColor color(198,219,247);
@@ -10,22 +13,13 @@ BuildUI::BuildUI(QWidget *parent) : QWidget(parent)
     this->setAutoFillBackground(true);
     //
 
-    QHBoxLayout * ships = new QHBoxLayout;
-
     for(int i = 4; i > 0; --i)
     {
-        QString s = QString(":/res/%1.png").arg(i) ;
-        ShipLabel* ship = new ShipLabel(s);
-        ship->setType(i);
-        ship->setMaximumSize(ship->pixmap()->size());
-        ship->setAlignment(Qt::AlignTop);
-        ships->addWidget(ship);
-        connect(ship, SIGNAL(clicked(int)), this, SLOT(buildShip(int)));
+        Ship* ship = new Ship(i);
+        scene->addItem(ship);
+        ship->setX(4*32-i*32);
+        setAlignment(Qt::AlignLeft|Qt::AlignTop);
     }
-
-    ships->setAlignment(Qt::AlignLeft);
-
-    setLayout(ships);
 }
 
 void BuildUI::buildShip(int type)

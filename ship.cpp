@@ -1,8 +1,10 @@
 #include "ship.h"
+#include <QDebug>
 
-Ship::Ship(int _size) : size(_size)
+
+Ship::Ship(int _type) : type(_type)
 {
-    switch (size)
+    switch (type)
     {
     case 1:
     {
@@ -45,4 +47,9 @@ void Ship::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 QRectF Ship::boundingRect() const
 {
     return QRectF(0, 0, sprite->width(), sprite->height());
+}
+
+void Ship::mousePressEvent(QGraphicsSceneMouseEvent *)
+{
+    qDebug()<<"Rrtg";
 }
