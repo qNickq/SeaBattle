@@ -1,29 +1,77 @@
-#include "buildui.h"
+#include "build.h"
 
-BuildUI::BuildUI(QWidget *parent)
+Build::Build(QWidget *parent)
 {
-    QGraphicsScene * scene = new QGraphicsScene;
+    scene = new QGraphicsScene;
     setScene(scene);
 
-    //Background
-    QPalette pal;
-    QColor color(198,219,247);
-    pal.setBrush(this->backgroundRole(), QBrush(color));
-    this->setPalette(pal);
-    this->setAutoFillBackground(true);
-    //
+    QColor color(198,219,247); //Sea color :)
+    setAlignment(Qt::AlignTop|Qt::AlignLeft);
+    setBackgroundBrush(QBrush(color));
+    setFixedSize(320,130);
+    setSizeAdjustPolicy(AdjustToContents);
 
-    for(int i = 4; i > 0; --i)
+    for(int i = 1; i < 5; ++i)
     {
         Ship* ship = new Ship(i);
+        ship->setPos(0,(i-1)*32);
+        ship->setRotation(-90);//Question!!!
         scene->addItem(ship);
-        ship->setX(4*32-i*32);
-        setAlignment(Qt::AlignLeft|Qt::AlignTop);
     }
 }
 
-void BuildUI::buildShip(int type)
+void Build::success(bool s)
 {
-    emit building(type);
+    setEnabled(s);
+}
+
+void Build::mousePressEvent(QMouseEvent *event)
+{
+    if(Ship * ship = dynamic_cast<Ship*>(itemAt(event->pos())))
+    {
+        int type = ship->getType();
+
+        switch (type)
+        {
+        case 1:
+        {
+            if(count[0] < 4)
+            {
+                emit building(type);
+                ++count[0];
+            }
+            break;
+        }
+        case 2:
+        {
+            if(count[1] < 3)
+            {
+                emit building(type);
+                ++count[1];
+            }
+            break;
+        }
+        case 3:
+        {
+            if(count[2] < 2)
+            {
+                emit building(type);
+                ++count[2];
+            }
+            break;
+        }
+        case 4:
+        {
+            if(count[3] < 1)
+            {
+                emit building(type);
+                ++count[3];
+            }
+            break;
+        }
+
+        }
+        this->setDisabled(true);
+    }
 }
 

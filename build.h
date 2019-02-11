@@ -3,18 +3,20 @@
 #include <QtWidgets>
 #include "ship.h"
 
-class BuildUI : public QGraphicsView
+class Build : public QGraphicsView
 {
     Q_OBJECT
 public:
-    BuildUI(QWidget *parent = nullptr);
-
+    Build(QWidget *parent = nullptr);
+public slots:
+    void success(bool);
 signals:
     void building(int);
+private: 
+    QGraphicsScene * scene;
+    int count[4] = {0,0,0,0};
 
-public slots:
-    void buildShip(int);
-private:
-    int count;
+protected:
+    void mousePressEvent(QMouseEvent*);
 };
 
