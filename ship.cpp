@@ -33,6 +33,21 @@ Ship::Ship(int _type) : type(_type)
     }
 }
 
+int Ship::getType()
+{
+    return type;
+}
+
+QPixmap *Ship::getSprite()
+{
+    return sprite;
+}
+
+Ship::~Ship()
+{
+    delete sprite;
+}
+
 
 void Ship::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
@@ -49,7 +64,3 @@ QRectF Ship::boundingRect() const
     return QRectF(0, 0, sprite->width(), sprite->height());
 }
 
-void Ship::mousePressEvent(QGraphicsSceneMouseEvent *)
-{
-    qDebug()<<"Rrtg";
-}
