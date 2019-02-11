@@ -2,7 +2,7 @@
 
 Cell::Cell(int i, int k)
 {
-    pos = QPoint(i,k);
+    coordinate = QPoint(i,k);
     sprite = new QPixmap(":/res/cell.png");
 }
 
