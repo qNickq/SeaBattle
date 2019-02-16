@@ -3,12 +3,13 @@
 Field::Field(QWidget *parent)
 {
     scene = new QGraphicsScene;
-    scene->setSceneRect(0,0,320,320);
     setScene(scene);
+
+    isBattle = false;
     active = nullptr;
+
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setRenderHint(QPainter::Antialiasing, false);
     setFixedSize(322, 322);
 
     for(int i = 0; i < 10; ++i)
@@ -28,11 +29,10 @@ bool Field::check()
     {
         if(Ship * temp = dynamic_cast<Ship*>(obj))
         {
-            qDebug() << temp;
-
             return false;
         }
     }
+
     if(active->rotation() == 0)
     {
         int _x = active->pos().x()-32;
@@ -45,14 +45,15 @@ bool Field::check()
                 if(Ship* temp = dynamic_cast<Ship*>(itemAt(_x+k*32, _y+i*32)))
                 {
                     if(temp != active)
-                    return false;
+                        return false;
                 }
             }
         }
     }
-    else if (active->rotation() > 0) {
-        int _x = active->pos().x()-(active->getType()+1)*32;
-        int _y = active->pos().y()-32;
+    else if (active->rotation() > 0)
+    {
+        int _x = active->pos().x() - active->getType()*32;
+        int _y = active->pos().y() - 32;
 
         for(int k = 0; k < 3; ++k)
         {
@@ -61,17 +62,12 @@ bool Field::check()
                 if(Ship* temp = dynamic_cast<Ship*>(itemAt(_x+i*32, _y+k*32)))
                 {
                     if(temp != active)
-                    return false;
+                        return false;
                 }
             }
         }
     }
     return true;
-
-
-
-
-
 }
 
 void Field::buildShip(int type)
@@ -79,7 +75,79 @@ void Field::buildShip(int type)
     Ship * ship = new Ship(type);
     active = ship;
     scene->addItem(ship);
-    setFocus();
+}
+
+QVector<QVector<int>> Field::getMap() const
+{
+    return map;
+}
+
+void Field::setMap()
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        for (int k = 0; k < 10; ++k)
+        {
+            if(items(i*32, k*32).size() > 1)
+            {
+                map[i][k]= 1;
+            }
+        }
+    }
+}
+
+void Field::setIsBattle(bool value)
+{
+    isBattle = value;
+}
+
+bool Field::setHit(int x, int y)
+{
+    QGraphicsPixmapItem *hit = new QGraphicsPixmapItem;
+
+    if(map[x][y] == 1)
+    {
+        hit->setPixmap(QPixmap(":/res/hit.png"));
+        hit->setPos(x*32, y*32);
+        scene->addItem(hit);
+
+        return true;
+    }
+    if(map[x][y] == 0)
+    {
+        hit->setPixmap(QPixmap(":/res/miss.png"));
+        hit->setPos(x*32, y*32);
+
+        scene->addItem(hit);
+
+        return false;
+    }
+}
+
+void Field::setShot(bool hit,int x, int y)
+{
+    if(hit)
+    {
+        map[x][y] = 1;
+
+        QGraphicsPixmapItem *hit = new QGraphicsPixmapItem;
+        hit->setPixmap(QPixmap(":/res/hit.png"));
+        hit->setPos(x*32, y*32);
+
+        scene->addItem(hit);
+        setEnabled(true);
+    }
+    else
+    {
+        map[x][y] = -1;
+
+        QGraphicsPixmapItem *hit = new QGraphicsPixmapItem;
+        hit->setPixmap(QPixmap(":/res/miss.png"));
+        hit->setPos(x*32, y*32);
+
+        scene->addItem(hit);
+        setEnabled(false);
+    }
 }
 
 void Field::keyPressEvent(QKeyEvent * event)
@@ -95,19 +163,19 @@ void Field::keyPressEvent(QKeyEvent * event)
         {
             active->setTransformOriginPoint(16,16);
 
-            if(angle == 0 && (_x-(active->getType()-1)*32)>=0)
+            if(angle == 0 && (_x-(active->getType()-1)*32) >= 0)
             {
                 active->setRotation(angle+90);
                 check();
             }
-            else if(angle > 0 && (_y+(active->getType()-1)*32)<320)
+            else if(angle > 0 && (_y+(active->getType()-1)*32) < 320)
             {
                 active->setRotation(angle-90);
                 check();
             }
             break;
-
         }
+
         case Qt::Key_Up:
         {
             if(_y-32 >= 0)
@@ -157,7 +225,8 @@ void Field::keyPressEvent(QKeyEvent * event)
         }
         case Qt::Key_Space:
         {
-            if(check()){
+            if(check())
+            {
                 emit success(true);
                 active = nullptr;
             }
@@ -167,18 +236,31 @@ void Field::keyPressEvent(QKeyEvent * event)
         {
             if(active != nullptr)
             {
+                emit cancel(active->getType());
                 scene->removeItem(active);
-                active = nullptr;
             }
+            active = nullptr;
             break;
         }
         }
     }
 }
+
 void Field::mousePressEvent(QMouseEvent * event)
 {
-    if (Ship * ship = dynamic_cast<Ship*>(itemAt(event->pos())))
+    if(!isBattle)
     {
-        if (active == nullptr)  active = ship;
+        if (Ship * ship = dynamic_cast<Ship*>(itemAt(event->pos())))
+        {
+            if (active == nullptr)  active = ship;
+        }
+    }
+    else
+    {
+        if(Cell * cell = dynamic_cast<Cell*>(items(event->pos()).last()))
+        {
+            emit sending(cell->pos());
+            setEnabled(false);
+        }
     }
 }

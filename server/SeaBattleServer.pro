@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-02-07T13:19:54
+# Project created by QtCreator 2019-02-07T17:20:08
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = SeaBattle
+TARGET = SeaBattleServer
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,25 +26,17 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-    field.cpp \
-    game.cpp \
-    cell.cpp \
-    ship.cpp \
-    build.cpp \
-    menu.cpp
+        mainwindow.cpp \
+    player.cpp
 
 HEADERS += \
-    field.h \
-    game.h \
-    cell.h \
-    ship.h \
-    build.h \
-    menu.h
+        mainwindow.h \
+    player.h
+
+FORMS += \
+        mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-RESOURCES += \
-    res.qrc

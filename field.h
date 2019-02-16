@@ -4,7 +4,6 @@
 #include <QGraphicsView>
 #include <QVector>
 #include <QKeyEvent>
-#include <QDebug>
 
 #include "ship.h"
 #include "cell.h"
@@ -16,24 +15,27 @@ public:
     Field(QWidget * parent = nullptr);
     bool check();
 
+    QVector<QVector<int> > getMap() const;
+
+    void setIsBattle(bool value);
+    bool setHit(int, int);
+    void setShot(bool hit, int, int);
+
 public slots:
     void buildShip(int);
+    void setMap();
+
 signals:
     void success(bool);
+    void cancel(int);
+    void sending(QPointF);
+
 private:
-    QVector<QVector<int>> map = {{0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0},
-                                 {0,0,0,0,0,0,0,0,0,0,0}};
+    QVector<QVector<int>> map = QVector<QVector<int>>(10,QVector<int>(10,0));
     QGraphicsScene * scene;
     Ship * active;
+    bool isBattle;
+
 protected:
     void keyPressEvent(QKeyEvent*);
     void mousePressEvent(QMouseEvent *event);

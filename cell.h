@@ -11,7 +11,7 @@ public:
 private:
     QPoint coordinate;
     QPixmap* sprite;
-    bool free;
+
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     QRectF boundingRect() const;
