@@ -93,7 +93,7 @@ void Build::mousePressEvent(QMouseEvent *event)
         {
             sum +=count[i];
         }
-        if (sum == 1) emit ready_activate(true);
+        if (sum == 10) emit ready_activate(true);
 
     }
 
