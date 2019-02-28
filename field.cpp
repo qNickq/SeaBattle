@@ -124,7 +124,7 @@ bool Field::setHit(int x, int y)
     }
 }
 
-void Field::setShot(bool hit,int x, int y)
+void Field::setShot(bool hit, int x, int y)
 {
     if(hit)
     {
@@ -148,6 +148,18 @@ void Field::setShot(bool hit,int x, int y)
         scene->addItem(hit);
         setEnabled(false);
     }
+}
+
+void Field::kill(QVector<QPointF> positions)
+{
+    for(int i = 0; i < positions.size(); ++i)
+    {
+        QGraphicsPixmapItem *hit = new QGraphicsPixmapItem;
+        hit->setPixmap(QPixmap(":/res/kill.png"));
+        hit->setPos(positions[i]*32);
+        scene->addItem(hit);
+    }
+    setEnabled(true);
 }
 
 void Field::keyPressEvent(QKeyEvent * event)

@@ -20,6 +20,7 @@ public:
     void setIsBattle(bool value);
     bool setHit(int, int);
     void setShot(bool hit, int, int);
+    void kill(QVector<QPointF>);
 
 public slots:
     void buildShip(int);

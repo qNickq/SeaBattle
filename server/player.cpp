@@ -1,5 +1,5 @@
 #include "player.h"
-
+#include <QDebug>
 Player::Player(QTcpSocket *socket)
 {
     this->sock = socket;
@@ -10,17 +10,14 @@ Player::Player(QTcpSocket *socket)
 
 bool Player::check_point(QPoint p)
 {
-    if (this->map[p.x()][p.y()] == 0)
-    {
+    if (this->map[p.x()][p.y()] == 0){
         this->map[p.x()][p.y()] = -2; // мимо
         return false;
     }
-    else
-    {
+    else {
         this->map[p.x()][p.y()] = -1; //в цель
         return true;
     }
-
 }
 
 void Player::set_ready(bool isReady)
@@ -31,6 +28,16 @@ void Player::set_ready(bool isReady)
 void Player::set_map(QVector<QVector<int>> new_map)
 {
     this->map = new_map;
+}
+
+void Player::show_map()
+{
+    for (auto v : map)
+    {
+        for (auto d : v)
+            cout << d << " ";
+        cout << endl;
+    }
 }
 
 bool Player::isFirst() const
@@ -53,6 +60,47 @@ bool Player::isEmpty() const
     return true;
 }
 
+bool Player::isDied(int x, int y,int prev_x,int prev_y, QVector<QPoint> &ship) const
+{
+    if (this->map[x][y] == -1)
+        ship.push_back(QPoint(x,y));
+
+
+    bool died = true;
+    if (y+1 < 10)
+    {
+        if (this->map[x][y+1] == 1)
+            return false;
+        if (this->map[x][y+1] == -1 && (x != prev_x || y+1 != prev_y))
+        {
+
+            died = this->isDied(x,y+1,x,y,ship);
+        }
+    }
+    if (y-1 >= 0)
+    {
+        if (this->map[x][y-1] == 1)
+            return false;
+        if (this->map[x][y-1] == -1 && (x != prev_x || y-1 != prev_y))
+            died = this->isDied(x,y-1,x,y,ship);
+    }
+    if (x+1 < 10)
+    {
+        if (this->map[x+1][y] == 1)
+            return false;
+        if (this->map[x+1][y] == -1 && (x+1 != prev_x || y != prev_y))
+            died = this->isDied(x+1,y,x,y,ship);
+    }
+    if (x-1 >= 0)
+    {
+        if (this->map[x-1][y] == 1)
+            return false;
+        if (this->map[x-1][y] == -1 && (x-1 != prev_x || y != prev_y))
+            died = this->isDied(x-1,y,x,y,ship);
+    }
+    return died;
+}
+
 int Player::descriptor() const
 {
     return sock->socketDescriptor();
@@ -66,4 +114,9 @@ QTcpSocket *Player::socket()
 void Player::set_first_step(bool isFirst)
 {
     this->first_step = isFirst;
+    if (isFirst)
+        sock->write("1");
+    else
+        sock->write("2");
+
 }

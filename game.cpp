@@ -13,9 +13,16 @@ Game::Game(const QString &strHost, int nPort, QWidget *parent) : QWidget(parent)
     //Views for fields and Bilding UI
     field1 = new Field;
     field2 = new Field;
-    build = new Build;
 
+    build = new Build;
+    build->setEnabled(false);
+    build->setFixedHeight(66);
     //****************************//
+
+    wait = new QLabel("Ожидайте подключения соперника!");
+
+    turn = new QLabel();
+    turn->hide();
 
     ready = new QPushButton("Готов");
     ready->setEnabled(false);
@@ -55,13 +62,13 @@ Game::Game(const QString &strHost, int nPort, QWidget *parent) : QWidget(parent)
     connect(ready, SIGNAL(clicked()), SLOT(sendFieldToServer()));
 
     //Layout settings
-    QVBoxLayout * v_lay = new QVBoxLayout;
-    QVBoxLayout * v_lay1 = new QVBoxLayout;
-    QVBoxLayout * v_lay2 = new QVBoxLayout;
+    v_lay = new QVBoxLayout;
+    v_lay1 = new QVBoxLayout;
+    v_lay2 = new QVBoxLayout;
 
-    QHBoxLayout * h_lay = new QHBoxLayout;
-    QHBoxLayout * h_lay1 = new QHBoxLayout;
-    QHBoxLayout * h_lay2 = new QHBoxLayout;
+    h_lay = new QHBoxLayout;
+    h_lay1 = new QHBoxLayout;
+    h_lay2 = new QHBoxLayout;
 
     //Design field #1
     leters1->setAlignment(Qt::AlignRight);
@@ -88,12 +95,15 @@ Game::Game(const QString &strHost, int nPort, QWidget *parent) : QWidget(parent)
 
     v_lay2->addWidget(rules);
     v_lay2->addWidget(build);
+    v_lay2->addWidget(wait);
     v_lay2->addWidget(ready);
 
     h_lay->addLayout(v_lay1);
     h_lay->addLayout(v_lay2);
 
+    v_lay->addWidget(turn);
     v_lay->addLayout(h_lay);
+
     v_lay->setSizeConstraint(QLayout::SetFixedSize);
 
     //****************************//
@@ -134,7 +144,7 @@ void Game::sendFieldToServer()
             f += QString::number(field1->getMap()[i][k]) + " ";
         }
     }
-    f.trimmed();
+
     socket->write(f.toUtf8());
     ready->disconnect();
     ready->setEnabled(false);
@@ -156,9 +166,12 @@ void Game::startBattle()
     field2->setIsBattle(true);
 
     build->close();
+    wait->close();
     ready->close();
     rules->close();
 
+
+    turn->show();
     leters2->show();
     digits2->show();
     field2->show();
@@ -170,8 +183,21 @@ void Game::readyServerRead()
 
     if(!isBattle)
     {
-        if (str == "1") field2->setEnabled(true);
-        if (str == "2") field2->setEnabled(false);
+        if (str == "all_connected")
+        {
+            wait->setText("Соперник найден! Расставляйте корабли!");
+            build->setEnabled(true);
+        }
+        if (str == "1")
+        {
+            field2->setEnabled(true);
+            turn->setText("Ваш ход!");
+        }
+        if (str == "2")
+        {
+            field2->setEnabled(false);
+            turn->setText("Ход противника!");
+        }
         if (str == "all_ready") startBattle();
     }
     else
@@ -179,7 +205,7 @@ void Game::readyServerRead()
         if(str.size() == 3)
         {
             QStringList list = str.split(",");
-            qDebug()<<list;
+
             if(!field2->isEnabled())
             {
                 if(!field1->setHit(list[0].toInt(), list[1].toInt()))
@@ -188,9 +214,32 @@ void Game::readyServerRead()
                 }
             }
         }
-        if (str == "1") field2->setShot(1, shot_pos.x()/32, shot_pos.y()/32); //если я попал
-        if (str == "0") field2->setShot(0, shot_pos.x()/32, shot_pos.y()/32);; //если я не попал
+        if (str == "1")
+        {
+            field2->setShot(1, shot_pos.x()/32, shot_pos.y()/32); //если я попал
+            turn->setText("Ваш ход!");
+        }
+        if (str == "0")
+        {
+            field2->setShot(0, shot_pos.x()/32, shot_pos.y()/32);; //если я не попал
+            turn->setText("Ход противника!");
+        }
         if (str == "WINNER") win();
         if (str == "LOSE") lose();
+        if (str.contains("KILL"))
+        {
+
+            QStringList msg = str.split(" ");
+            msg.pop_front();
+            msg.pop_back();
+
+            QVector<QPointF> positions;
+            for(int i = 0; i < msg.size(); ++i)
+            {
+                QStringList points = msg[i].split(",");
+                positions.push_back(QPointF(points[0].toFloat(), points[1].toFloat()));
+            }
+            field2->kill(positions);
+        }
     }
 }

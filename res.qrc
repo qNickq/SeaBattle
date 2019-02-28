@@ -9,5 +9,6 @@
         <file>res/leters.png</file>
         <file>res/hit.png</file>
         <file>res/miss.png</file>
+        <file>res/kill.png</file>
     </qresource>
 </RCC>

@@ -12,6 +12,7 @@ public:
     Game(const QString& strHost, int nPort, QWidget *parent = nullptr);
     void win();
     void lose();
+
 public slots:
     void slotConnected();
     void sendFieldToServer();
@@ -26,6 +27,7 @@ private:
     Build * build;
     QTextEdit * rules;
     QPushButton * ready;
+    QLabel * wait;
 
     //Наше поле
     Field * field1;
@@ -41,7 +43,16 @@ private:
     QPointF shot_pos;
     bool isBattle;
 
+    QLabel* turn;
 
+    //Слои интерфейса
+    QVBoxLayout * v_lay = new QVBoxLayout;
+    QVBoxLayout * v_lay1 = new QVBoxLayout;
+    QVBoxLayout * v_lay2 = new QVBoxLayout;
+
+    QHBoxLayout * h_lay = new QHBoxLayout;
+    QHBoxLayout * h_lay1 = new QHBoxLayout;
+    QHBoxLayout * h_lay2 = new QHBoxLayout;
 
 
 };
