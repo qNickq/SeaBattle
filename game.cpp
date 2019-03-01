@@ -192,13 +192,11 @@ void Game::readyServerRead()
         {
             field2->setEnabled(true);
             turn->setText("Ваш ход!");
-            myturn = true;
         }
         if (str == "2")
         {
             field2->setEnabled(false);
-            turn->setText("Ход противника!");
-            myturn = false;
+            turn->setText("Ход противника!");     
         }
         if (str == "all_ready") startBattle();
     }
